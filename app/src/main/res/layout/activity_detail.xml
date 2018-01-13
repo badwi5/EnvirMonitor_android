@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.xuxiang.envirmonitor.view.CustomSwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swr_detail"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.xuxiang.envirmonitor.DetailActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/clay_detail_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginTop="4dp"
+            android:background="@color/colorPrimary"
+            android:elevation="4dp"
+            android:padding="12dp">
+
+            <ImageView
+                android:id="@+id/iv_detail_status"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:paddingRight="6dp"
+                android:src="@drawable/ic_offline"
+                app:layout_constraintBottom_toBottomOf="@id/tv_detail_title"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_detail_title" />
+
+            <TextView
+                android:id="@+id/tv_detail_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#fff"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toRightOf="@id/iv_detail_status"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="设备名称" />
+
+            <TextView
+                android:id="@+id/tv_detail_deviceid_indic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="ID:  "
+                android:textColor="#fff"
+                android:textSize="18sp"
+                app:layout_constraintLeft_toRightOf="@id/view"
+                app:layout_constraintTop_toBottomOf="@id/tv_detail_title" />
+
+            <TextView
+                android:id="@+id/tv_detail_deviceid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#fff"
+                android:textSize="18sp"
+                app:layout_constraintLeft_toRightOf="@+id/tv_detail_deviceid_indic"
+                app:layout_constraintTop_toTopOf="@+id/tv_detail_deviceid_indic"
+                tools:text="00000000" />
+
+            <TextView
+                android:id="@+id/tv_detail_date_indic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="更新于"
+                android:textColor="#fff"
+                android:textSize="18sp"
+                app:layout_constraintLeft_toLeftOf="@id/tv_detail_deviceid_indic"
+                app:layout_constraintTop_toBottomOf="@id/tv_detail_deviceid" />
+
+            <TextView
+                android:id="@+id/tv_detail_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="    No Data"
+                android:textColor="#fff"
+                android:textSize="18sp"
+                app:layout_constraintLeft_toRightOf="@id/tv_detail_date_indic"
+                app:layout_constraintTop_toTopOf="@id/tv_detail_date_indic" />
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="2dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginTop="6dp"
+                android:background="#fff"
+                app:layout_constraintBottom_toBottomOf="@id/tv_detail_date_indic"
+                app:layout_constraintLeft_toLeftOf="@id/iv_detail_status"
+                app:layout_constraintTop_toTopOf="@id/tv_detail_deviceid_indic" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/clay_detail_center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="#fff"
+            android:elevation="2dp"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp">
+
+            <!--查询行-->
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tilay_detail_from"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:hint="起始日期"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/tilay_detail_to"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:imeOptions="actionNext"
+                    android:inputType="date"
+                    android:maxLength="10"
+                    android:onClick="onEditTextClicked"
+                    android:textSize="18sp" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/tilay_detail_to"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:hint="结束日期"
+                app:layout_constraintLeft_toRightOf="@id/tilay_detail_from"
+                app:layout_constraintRight_toLeftOf="@id/btn_detail_query"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:imeOptions="actionNext"
+                    android:inputType="date"
+                    android:maxLength="10"
+                    android:onClick="onEditTextClicked"
+                    android:textSize="18sp" />
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/btn_detail_query"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="6dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/colorPrimary"
+                android:onClick="onButtonClicked"
+                android:text="历史查询"
+                android:textColor="#fff"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="@id/tilay_detail_from"
+                app:layout_constraintDimensionRatio="2:1"
+                app:layout_constraintLeft_toRightOf="@id/tilay_detail_to"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tilay_detail_from" />
+            <!--查询行end-->
+
+            <!--图标行-->
+            <ImageView
+                android:id="@+id/iv_detail_temperature"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitEnd"
+                android:src="@drawable/ic_temperature"
+                app:layout_constraintBottom_toBottomOf="@id/tv_detail_wifisig_indic"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/tv_detail_temperature_indic"
+                app:layout_constraintTop_toTopOf="@id/tv_detail_wifisig_indic" />
+
+            <TextView
+                android:id="@+id/tv_detail_temperature_indic"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="°C"
+                android:textColor="@color/colorTextLight"
+                android:textSize="14sp"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintLeft_toRightOf="@id/iv_detail_temperature"
+                app:layout_constraintRight_toLeftOf="@id/iv_detail_humidity"
+                app:layout_constraintTop_toTopOf="@id/iv_detail_temperature" />
+
+            <ImageView
+                android:id="@+id/iv_detail_humidity"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitEnd"
+                android:src="@drawable/ic_humidity"
+                app:layout_constraintBottom_toBottomOf="@id/tv_detail_wifisig_indic"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintLeft_toRightOf="@id/tv_detail_temperature_indic"
+                app:layout_constraintRight_toLeftOf="@id/tv_detail_humidity_indic"
+                app:layout_constraintTop_toTopOf="@id/tv_detail_wifisig_indic" />
+
+            <TextView
+                android:id="@+id/tv_detail_humidity_indic"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="%rh"
+                android:textColor="@color/colorTextLight"
+                android:textSize="14sp"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintLeft_toRightOf="@id/iv_detail_humidity"
+                app:layout_constraintRight_toLeftOf="@id/iv_detail_voltage"
+                app:layout_constraintTop_toTopOf="@id/iv_detail_humidity" />
+
+            <ImageView
+                android:id="@+id/iv_detail_voltage"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitEnd"
+                android:src="@drawable/ic_voltage"
+                app:layout_constraintBottom_toBottomOf="@id/tv_detail_wifisig_indic"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintLeft_toRightOf="@id/tv_detail_humidity_indic"
+                app:layout_constraintRight_toLeftOf="@id/tv_detail_voltage_indic"
+                app:layout_constraintTop_toTopOf="@id/tv_detail_wifisig_indic" />
+
+            <TextView
+                android:id="@+id/tv_detail_voltage_indic"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="  V"
+                android:textColor="@color/colorTextLight"
+                android:textSize="14sp"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintLeft_toRightOf="@id/iv_detail_voltage"
+                app:layout_constraintRight_toLeftOf="@id/tv_detail_wifisig_indic"
+                app:layout_constraintTop_toTopOf="@id/iv_detail_voltage" />
+
+            <TextView
+                android:id="@+id/tv_detail_wifisig_indic"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp"
+                android:text="模块信号"
+                android:textColor="@color/colorTextLight"
+                android:textSize="14sp"
+                app:layout_constraintHorizontal_weight="2"
+                app:layout_constraintLeft_toRightOf="@id/tv_detail_voltage_indic"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tilay_detail_from" />
+
+            <View
+                android:id="@+id/v_detail_left"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="@color/colorLight"
+                app:layout_constraintBottom_toBottomOf="@id/iv_detail_temperature"
+                app:layout_constraintLeft_toRightOf="@id/tv_detail_temperature_indic"
+                app:layout_constraintTop_toTopOf="@id/iv_detail_temperature" />
+
+            <View
+                android:id="@+id/v_detail_center"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="@color/colorLight"
+                app:layout_constraintBottom_toBottomOf="@id/iv_detail_humidity"
+                app:layout_constraintLeft_toRightOf="@id/tv_detail_humidity_indic"
+                app:layout_constraintTop_toTopOf="@id/iv_detail_humidity" />
+
+            <View
+                android:id="@+id/v_detail_right"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:background="@color/colorLight"
+                app:layout_constraintBottom_toBottomOf="@id/iv_detail_voltage"
+                app:layout_constraintLeft_toRightOf="@id/tv_detail_voltage_indic"
+                app:layout_constraintTop_toTopOf="@id/iv_detail_voltage" />
+            <!--图标行end-->
+
+            <!--数据显示行-->
+            <TextView
+                android:id="@+id/tv_detail_temperature"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="NaN"
+                android:textColor="@color/colorTextDark"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/tv_detail_humidity"
+                app:layout_constraintTop_toBottomOf="@id/tv_detail_wifisig_indic" />
+
+            <TextView
+                android:id="@+id/tv_detail_humidity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="NaN"
+                android:textColor="@color/colorTextDark"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintLeft_toRightOf="@id/tv_detail_temperature"
+                app:layout_constraintRight_toLeftOf="@id/tv_detail_voltage"
+                app:layout_constraintTop_toTopOf="@id/tv_detail_temperature" />
+
+            <TextView
+                android:id="@+id/tv_detail_voltage"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="NaN"
+                android:textColor="@color/colorTextDark"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintLeft_toRightOf="@id/tv_detail_humidity"
+                app:layout_constraintRight_toLeftOf="@id/iv_detail_wifisig"
+                app:layout_constraintTop_toTopOf="@id/tv_detail_temperature" />
+
+            <ImageView
+                android:id="@+id/iv_detail_wifisig"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_wifi_sig_0"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_weight="1"
+                app:layout_constraintLeft_toRightOf="@id/tv_detail_voltage"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_detail_temperature" />
+            <!--数据显示行end-->
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/clay_detail_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="4dp"
+            android:background="#fff"
+            android:elevation="2dp"
+            android:padding="8dp">
+
+            <RadioGroup
+                android:id="@+id/rdgp_detail_range"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <RadioButton
+                    android:id="@+id/rdbtn_detail_range1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/radiobtn_roundcornerbg"
+                    android:button="@null"
+                    android:text="最近12h"
+                    android:textColor="@drawable/radiobtn_textcolor"
+                    android:textSize="12sp" />
+
+                <RadioButton
+                    android:id="@+id/rdbtn_detail_range2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/radiobtn_roundcornerbg"
+                    android:button="@null"
+                    android:text="最近1天"
+                    android:textColor="@drawable/radiobtn_textcolor"
+                    android:textSize="12sp" />
+
+                <RadioButton
+                    android:id="@+id/rdbtn_detail_range3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/radiobtn_roundcornerbg"
+                    android:button="@null"
+                    android:text="最近3天"
+                    android:textColor="@drawable/radiobtn_textcolor"
+                    android:textSize="12sp" />
+            </RadioGroup>
+
+            <RadioGroup
+                android:id="@+id/rdgp_detail_zoom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <RadioButton
+                    android:id="@+id/rdbtn_detail_zoom1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/radiobtn_roundbg"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="×1"
+                    android:textColor="@drawable/radiobtn_textcolor"
+                    android:textSize="12sp" />
+
+                <RadioButton
+                    android:id="@+id/rdbtn_detail_zoom2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/radiobtn_roundbg"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="×3"
+                    android:textColor="@drawable/radiobtn_textcolor"
+                    android:textSize="12sp" />
+
+                <RadioButton
+                    android:id="@+id/rdbtn_detail_zoom3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/radiobtn_roundbg"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="×6"
+                    android:textColor="@drawable/radiobtn_textcolor"
+                    android:textSize="12sp" />
+            </RadioGroup>
+
+            <View
+                android:id="@+id/v_detail_legend"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorLight"
+                app:layout_constraintBottom_toTopOf="@id/tv_detail_humidity_legend"
+                app:layout_constraintTop_toBottomOf="@+id/rdgp_detail_range" />
+
+            <!--图例行-->
+            <TextView
+                android:id="@+id/tv_detail_temperature_legend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="温度"
+                android:textColor="@color/colorThemeTemp"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/v_detail_temperature_legend"
+                app:layout_constraintTop_toBottomOf="@id/v_detail_legend" />
+
+            <View
+                android:id="@+id/v_detail_temperature_legend"
+                android:layout_width="20sp"
+                android:layout_height="2dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/colorThemeTemp"
+                app:layout_constraintBottom_toBottomOf="@id/tv_detail_temperature_legend"
+                app:layout_constraintLeft_toRightOf="@id/tv_detail_temperature_legend"
+                app:layout_constraintRight_toLeftOf="@id/tv_detail_humidity_legend"
+                app:layout_constraintTop_toTopOf="@id/tv_detail_temperature_legend" />
+
+            <TextView
+                android:id="@+id/tv_detail_humidity_legend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="湿度"
+                android:textColor="@color/colorThemeHumi"
+                app:layout_constraintLeft_toRightOf="@id/v_detail_temperature_legend"
+                app:layout_constraintRight_toLeftOf="@id/v_detail_humidity_legend"
+                app:layout_constraintTop_toTopOf="@id/tv_detail_temperature_legend" />
+
+            <View
+                android:id="@+id/v_detail_humidity_legend"
+                android:layout_width="20sp"
+                android:layout_height="2dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/colorThemeHumi"
+                app:layout_constraintBottom_toBottomOf="@id/tv_detail_temperature_legend"
+                app:layout_constraintLeft_toRightOf="@id/tv_detail_humidity_legend"
+                app:layout_constraintRight_toLeftOf="@id/tv_detail_voltage_legend"
+                app:layout_constraintTop_toTopOf="@id/tv_detail_temperature_legend" />
+
+            <TextView
+                android:id="@+id/tv_detail_voltage_legend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="电压"
+                android:textColor="@color/colorThemeVolt"
+                app:layout_constraintLeft_toRightOf="@id/v_detail_humidity_legend"
+                app:layout_constraintRight_toLeftOf="@id/v_detail_voltage_legend"
+                app:layout_constraintTop_toTopOf="@id/tv_detail_temperature_legend" />
+
+            <View
+                android:id="@+id/v_detail_voltage_legend"
+                android:layout_width="20sp"
+                android:layout_height="2dp"
+                android:layout_marginLeft="4dp"
+                android:background="@color/colorThemeVolt"
+                app:layout_constraintBottom_toBottomOf="@id/tv_detail_temperature_legend"
+                app:layout_constraintLeft_toRightOf="@id/tv_detail_voltage_legend"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_detail_temperature_legend" />
+            <!--图例行end-->
+
+            <lecho.lib.hellocharts.view.LineChartView
+                android:id="@+id/lcv_detail"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:clickable="true"
+                android:focusableInTouchMode="true"
+                android:paddingBottom="16dp"
+                android:paddingTop="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_detail_temperature_legend" />
+
+            <com.xuxiang.envirmonitor.view.ChartHintView
+                android:id="@+id/charthintview_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
+</com.xuxiang.envirmonitor.view.CustomSwipeRefreshLayout>

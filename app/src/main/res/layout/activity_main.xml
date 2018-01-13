@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drlay_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.xuxiang.envirmonitor.MainActivity">
+
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/tb_main"
+                android:layout_width="match_parent"
+                android:layout_height="?android:attr/actionBarSize"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:layout_scrollFlags="scroll|enterAlways|snap" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swr_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusableInTouchMode="true"
+            android:padding="4dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/ryv_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical" />
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nsv_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:behavior_peekHeight="0dp"
+            app:layout_behavior="@string/bottom_sheet_behavior"
+            app:layout_insetEdge="bottom">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                android:clickable="true"
+                android:onClick="onChartClicked">
+
+                <View
+                    android:id="@+id/v_main_gradient"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:background="@drawable/gradient" />
+
+                <!--图例行-->
+                <TextView
+                    android:id="@+id/tv_main_temperature_legend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="温度"
+                    android:textColor="@color/colorThemeTemp"
+                    app:layout_constraintHorizontal_chainStyle="packed"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/v_main_temperature_legend"
+                    app:layout_constraintTop_toBottomOf="@id/v_main_gradient" />
+
+                <View
+                    android:id="@+id/v_main_temperature_legend"
+                    android:layout_width="20sp"
+                    android:layout_height="2dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="8dp"
+                    android:background="@color/colorThemeTemp"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_main_temperature_legend"
+                    app:layout_constraintLeft_toRightOf="@id/tv_main_temperature_legend"
+                    app:layout_constraintRight_toLeftOf="@id/tv_main_humidity_legend"
+                    app:layout_constraintTop_toTopOf="@id/tv_main_temperature_legend" />
+
+                <TextView
+                    android:id="@+id/tv_main_humidity_legend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="湿度"
+                    android:textColor="@color/colorThemeHumi"
+                    app:layout_constraintLeft_toRightOf="@id/v_main_temperature_legend"
+                    app:layout_constraintRight_toLeftOf="@id/v_main_humidity_legend"
+                    app:layout_constraintTop_toTopOf="@id/tv_main_temperature_legend" />
+
+                <View
+                    android:id="@+id/v_main_humidity_legend"
+                    android:layout_width="20sp"
+                    android:layout_height="2dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="8dp"
+                    android:background="@color/colorThemeHumi"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_main_temperature_legend"
+                    app:layout_constraintLeft_toRightOf="@id/tv_main_humidity_legend"
+                    app:layout_constraintRight_toLeftOf="@id/tv_main_voltage_legend"
+                    app:layout_constraintTop_toTopOf="@id/tv_main_temperature_legend" />
+
+                <TextView
+                    android:id="@+id/tv_main_voltage_legend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="电压"
+                    android:textColor="@color/colorThemeVolt"
+                    app:layout_constraintLeft_toRightOf="@id/v_main_humidity_legend"
+                    app:layout_constraintRight_toLeftOf="@id/v_main_voltage_legend"
+                    app:layout_constraintTop_toTopOf="@id/tv_main_temperature_legend" />
+
+                <View
+                    android:id="@+id/v_main_voltage_legend"
+                    android:layout_width="20sp"
+                    android:layout_height="2dp"
+                    android:layout_marginLeft="4dp"
+                    android:background="@color/colorThemeVolt"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_main_temperature_legend"
+                    app:layout_constraintLeft_toRightOf="@id/tv_main_voltage_legend"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tv_main_temperature_legend" />
+                <!--图例行end-->
+
+                <lecho.lib.hellocharts.view.LineChartView
+                    android:id="@+id/lcv_main"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:paddingBottom="16dp"
+                    android:paddingTop="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="2:1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_main_temperature_legend" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#fff"
+        app:headerLayout="@layout/nav_header"
+        app:itemTextColor="@color/colorTextDark"
+        app:menu="@menu/nav_menu" />
+
+</android.support.v4.widget.DrawerLayout>

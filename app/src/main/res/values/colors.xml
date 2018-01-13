@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#009688</color>
+    <color name="colorPrimaryDark">#00897b</color>
+    <color name="colorAccent">#ff4081</color>
+    <color name="colorTextDark">#616161</color>
+    <color name="colorTextLight">#9e9e9e</color>
+    <color name="colorLight">#e0e0e0</color>
+    <color name="colorThemeTemp">#ff5252</color>
+    <color name="colorThemeHumi">#26c6da</color>
+    <color name="colorThemeVolt">#fbc02d</color>
+</resources>
