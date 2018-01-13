@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
     private int mItemPosition;
     private boolean mIsExit = false;
     //endregion
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
