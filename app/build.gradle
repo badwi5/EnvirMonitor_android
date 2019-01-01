@@ -6,14 +6,21 @@ android {
         applicationId "com.xuxiang.envirmonitor"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    android.applicationVariants.all { variant ->
+        variant.outputs.all {
+            def formattedDate = (new Date()).format('yyyyMMdd')
+            def fileName = "机房环境监控v${defaultConfig.versionName}_${variant.buildType.name}_${formattedDate}.apk"
+            outputFileName = fileName;
         }
     }
 }
