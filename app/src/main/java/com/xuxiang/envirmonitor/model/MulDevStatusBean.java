@@ -9,97 +9,60 @@ import java.util.List;
 public class MulDevStatusBean{
 
     /**
-     * errno : 0
-     * data : {"devices":[{"title":"监控","online":true,"id":"13606144"}],"total_count":16}
-     * error : succ
+     * code : 0
+     * data : {"devices":[{"id":"13606144","online":true,"title":"测试1"},{"id":"13629870","online":false,"title":"测试2"}],"total_count":2}
+     * msg : succ
      */
 
-    private int errno;
+    private int code;
     private DataBean data;
-    private String error;
+    private String msg;
 
-    public int getErrno() {
-        return errno;
-    }
-
-    public void setErrno(int errno) {
-        this.errno = errno;
+    public int getCode() {
+        return code;
     }
 
     public DataBean getData() {
         return data;
     }
 
-    public void setData(DataBean data) {
-        this.data = data;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
+    public String getMsg() {
+        return msg;
     }
 
     public static class DataBean {
         /**
-         * devices : [{"title":"监控","online":true,"id":"13606144"}]
-         * total_count : 16
+         * devices : [{"id":"13606144","online":true,"title":"测试1"},{"id":"13629870","online":false,"title":"测试2"}]
+         * total_count : 2
          */
 
-        private int total_count;
         private List<DevicesBean> devices;
-
-        public int getTotal_count() {
-            return total_count;
-        }
-
-        public void setTotal_count(int total_count) {
-            this.total_count = total_count;
-        }
 
         public List<DevicesBean> getDevices() {
             return devices;
         }
 
-        public void setDevices(List<DevicesBean> devices) {
-            this.devices = devices;
-        }
-
         public static class DevicesBean {
             /**
-             * title : 监控
-             * online : true
              * id : 13606144
+             * online : true
+             * title : 测试1
              */
 
-            private String title;
-            private boolean online;
             private String id;
+            private boolean online;
+            private String title;
 
-            public String getTitle() {
-                return title;
-            }
-
-            public void setTitle(String title) {
-                this.title = title;
+            public String getId() {
+                return id;
             }
 
             public boolean isOnline() {
                 return online;
             }
 
-            public void setOnline(boolean online) {
-                this.online = online;
-            }
-
-            public String getId() {
-                return id;
-            }
-
-            public void setId(String id) {
-                this.id = id;
+            public String getTitle() {
+                return title;
             }
         }
     }

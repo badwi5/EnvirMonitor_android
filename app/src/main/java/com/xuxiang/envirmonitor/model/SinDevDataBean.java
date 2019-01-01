@@ -3,6 +3,7 @@ package com.xuxiang.envirmonitor.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,21 +13,21 @@ import java.util.List;
 public class SinDevDataBean {
 
     /**
-     * errno : 0
-     * data : {"count":4,"datastreams":[{"datapoints":[{"at":"2017-11-13 09:50:39.203","value":66}],"id":"RSSI"},{"datapoints":[{"at":"2017-11-13 09:50:39.204","value":24.4}],"id":"temperature"},{"datapoints":[{"at":"2017-11-13 09:50:39.203","value":44.2}],"id":"humidity"},{"datapoints":[{"at":"2017-11-13 09:50:39.204","value":218}],"id":"voltage"}]}
-     * error : succ
+     * code : 0
+     * data : {"count":12,"datastreams":[{"datapoints":[{"at":"2019-01-01 01:03:53.428","value":55},{"at":"2019-01-01 01:00:53.928","value":55},{"at":"2019-01-01 00:57:54.428","value":55}],"id":"RSSI"},{"datapoints":[{"at":"2019-01-01 01:03:53.429","value":22.8},{"at":"2019-01-01 01:00:53.928","value":22.5},{"at":"2019-01-01 00:57:54.428","value":22.2}],"id":"Temp"},{"datapoints":[{"at":"2019-01-01 01:03:53.429","value":228},{"at":"2019-01-01 01:00:53.928","value":227},{"at":"2019-01-01 00:57:54.428","value":228}],"id":"Volt"},{"datapoints":[{"at":"2019-01-01 01:03:53.428","value":22.7},{"at":"2019-01-01 01:00:53.928","value":22.9},{"at":"2019-01-01 00:57:54.427","value":22.9}],"id":"Humi"}]}
+     * msg : succ
      */
 
-    private int errno;
+    private int code;
     private DataBean data;
-    private String error;
+    private String msg;
 
-    public int getErrno() {
-        return errno;
+    public int getCode() {
+        return code;
     }
 
-    public void setErrno(int errno) {
-        this.errno = errno;
+    public void setCode(int code) {
+        this.code = code;
     }
 
     public DataBean getData() {
@@ -37,39 +38,22 @@ public class SinDevDataBean {
         this.data = data;
     }
 
-    public String getError() {
-        return error;
+    public String getMsg() {
+        return msg;
     }
 
-    public void setError(String error) {
-        this.error = error;
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 
-    public static class DataBean implements Parcelable{
+    public static class DataBean implements Parcelable {
         /**
-         * count : 4
-         * datastreams : [{"datapoints":[{"at":"2017-11-13 09:50:39.203","value":66}],"id":"RSSI"},{"datapoints":[{"at":"2017-11-13 09:50:39.204","value":24.4}],"id":"temperature"},{"datapoints":[{"at":"2017-11-13 09:50:39.203","value":44.2}],"id":"humidity"},{"datapoints":[{"at":"2017-11-13 09:50:39.204","value":218}],"id":"voltage"}]
+         * count : 12
+         * datastreams : [{"datapoints":[{"at":"2019-01-01 01:03:53.428","value":55},{"at":"2019-01-01 01:00:53.928","value":55},{"at":"2019-01-01 00:57:54.428","value":55}],"id":"RSSI"},{"datapoints":[{"at":"2019-01-01 01:03:53.429","value":22.8},{"at":"2019-01-01 01:00:53.928","value":22.5},{"at":"2019-01-01 00:57:54.428","value":22.2}],"id":"Temp"},{"datapoints":[{"at":"2019-01-01 01:03:53.429","value":228},{"at":"2019-01-01 01:00:53.928","value":227},{"at":"2019-01-01 00:57:54.428","value":228}],"id":"Volt"},{"datapoints":[{"at":"2019-01-01 01:03:53.428","value":22.7},{"at":"2019-01-01 01:00:53.928","value":22.9},{"at":"2019-01-01 00:57:54.427","value":22.9}],"id":"Humi"}]
          */
 
         private int count;
         private List<DatastreamsBean> datastreams;
-
-        protected DataBean(Parcel in) {
-            count = in.readInt();
-            datastreams = in.createTypedArrayList(DatastreamsBean.CREATOR);
-        }
-
-        public static final Creator<DataBean> CREATOR = new Creator<DataBean>() {
-            @Override
-            public DataBean createFromParcel(Parcel in) {
-                return new DataBean(in);
-            }
-
-            @Override
-            public DataBean[] newArray(int size) {
-                return new DataBean[size];
-            }
-        };
 
         public int getCount() {
             return count;
@@ -87,42 +71,14 @@ public class SinDevDataBean {
             this.datastreams = datastreams;
         }
 
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeInt(count);
-            dest.writeTypedList(datastreams);
-        }
-
-        public static class DatastreamsBean implements Parcelable{
+        public static class DatastreamsBean implements Parcelable {
             /**
-             * datapoints : [{"at":"2017-11-13 09:50:39.203","value":66}]
+             * datapoints : [{"at":"2019-01-01 01:03:53.428","value":55},{"at":"2019-01-01 01:00:53.928","value":55},{"at":"2019-01-01 00:57:54.428","value":55}]
              * id : RSSI
              */
 
             private String id;
             private List<DatapointsBean> datapoints;
-
-            protected DatastreamsBean(Parcel in) {
-                id = in.readString();
-                datapoints = in.createTypedArrayList(DatapointsBean.CREATOR);
-            }
-
-            public static final Creator<DatastreamsBean> CREATOR = new Creator<DatastreamsBean>() {
-                @Override
-                public DatastreamsBean createFromParcel(Parcel in) {
-                    return new DatastreamsBean(in);
-                }
-
-                @Override
-                public DatastreamsBean[] newArray(int size) {
-                    return new DatastreamsBean[size];
-                }
-            };
 
             public String getId() {
                 return id;
@@ -140,42 +96,14 @@ public class SinDevDataBean {
                 this.datapoints = datapoints;
             }
 
-            @Override
-            public int describeContents() {
-                return 0;
-            }
-
-            @Override
-            public void writeToParcel(Parcel dest, int flags) {
-                dest.writeString(id);
-                dest.writeTypedList(datapoints);
-            }
-
-            public static class DatapointsBean implements Parcelable{
+            public static class DatapointsBean implements Parcelable {
                 /**
-                 * at : 2017-11-13 09:50:39.203
-                 * value : 66
+                 * at : 2019-01-01 01:03:53.428
+                 * value : 55
                  */
 
                 private String at;
-                private double value;
-
-                protected DatapointsBean(Parcel in) {
-                    at = in.readString();
-                    value = in.readDouble();
-                }
-
-                public static final Creator<DatapointsBean> CREATOR = new Creator<DatapointsBean>() {
-                    @Override
-                    public DatapointsBean createFromParcel(Parcel in) {
-                        return new DatapointsBean(in);
-                    }
-
-                    @Override
-                    public DatapointsBean[] newArray(int size) {
-                        return new DatapointsBean[size];
-                    }
-                };
+                private String value;
 
                 public String getAt() {
                     return at;
@@ -185,11 +113,11 @@ public class SinDevDataBean {
                     this.at = at;
                 }
 
-                public double getValue() {
+                public String getValue() {
                     return value;
                 }
 
-                public void setValue(double value) {
+                public void setValue(String value) {
                     this.value = value;
                 }
 
@@ -200,10 +128,94 @@ public class SinDevDataBean {
 
                 @Override
                 public void writeToParcel(Parcel dest, int flags) {
-                    dest.writeString(at);
-                    dest.writeDouble(value);
+                    dest.writeString(this.at);
+                    dest.writeString(this.value);
                 }
+
+                public DatapointsBean() {
+                }
+
+                protected DatapointsBean(Parcel in) {
+                    this.at = in.readString();
+                    this.value = in.readString();
+                }
+
+                public static final Creator<DatapointsBean> CREATOR = new Creator<DatapointsBean>() {
+                    @Override
+                    public DatapointsBean createFromParcel(Parcel source) {
+                        return new DatapointsBean(source);
+                    }
+
+                    @Override
+                    public DatapointsBean[] newArray(int size) {
+                        return new DatapointsBean[size];
+                    }
+                };
             }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeString(this.id);
+                dest.writeList(this.datapoints);
+            }
+
+            public DatastreamsBean() {
+            }
+
+            protected DatastreamsBean(Parcel in) {
+                this.id = in.readString();
+                this.datapoints = new ArrayList<DatapointsBean>();
+                in.readList(this.datapoints, DatapointsBean.class.getClassLoader());
+            }
+
+            public static final Creator<DatastreamsBean> CREATOR = new Creator<DatastreamsBean>() {
+                @Override
+                public DatastreamsBean createFromParcel(Parcel source) {
+                    return new DatastreamsBean(source);
+                }
+
+                @Override
+                public DatastreamsBean[] newArray(int size) {
+                    return new DatastreamsBean[size];
+                }
+            };
         }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(this.count);
+            dest.writeList(this.datastreams);
+        }
+
+        public DataBean() {
+        }
+
+        protected DataBean(Parcel in) {
+            this.count = in.readInt();
+            this.datastreams = new ArrayList<DatastreamsBean>();
+            in.readList(this.datastreams, DatastreamsBean.class.getClassLoader());
+        }
+
+        public static final Parcelable.Creator<DataBean> CREATOR = new Parcelable.Creator<DataBean>() {
+            @Override
+            public DataBean createFromParcel(Parcel source) {
+                return new DataBean(source);
+            }
+
+            @Override
+            public DataBean[] newArray(int size) {
+                return new DataBean[size];
+            }
+        };
     }
 }

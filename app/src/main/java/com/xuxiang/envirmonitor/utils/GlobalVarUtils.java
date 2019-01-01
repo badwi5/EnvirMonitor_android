@@ -11,6 +11,13 @@ import android.preference.PreferenceManager;
 
 @SuppressLint("Registered")
 public class GlobalVarUtils extends Application {
+
+    //将平台端定义的数据流名称与应用中所用变量名对应
+    public final static String Temp = "Temp";
+    public final static String Humi = "Humi";
+    public final static String Volt = "Volt";
+    public final static String RSSI = "RSSI";
+
     private static String sApikey;
     private static int sDevCount;
     private static String sDevIds;

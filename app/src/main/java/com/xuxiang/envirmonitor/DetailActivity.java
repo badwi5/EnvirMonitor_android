@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.chinamobile.iot.onenet.OneNetApiCallback;
 import com.xuxiang.envirmonitor.model.MulDevStatusBean;
 import com.xuxiang.envirmonitor.model.SinDevDataBean;
+import com.xuxiang.envirmonitor.utils.GlobalVarUtils;
 import com.xuxiang.envirmonitor.utils.GsonHelper;
 import com.xuxiang.envirmonitor.utils.OneNetHelper;
 import com.xuxiang.envirmonitor.utils.ToastHelper;
@@ -54,9 +55,9 @@ public class DetailActivity extends AppCompatActivity {
     //region 变量初始化
     private CustomSwipeRefreshLayout mSwipeRefreshLayout;
     private TextView mtvDate;
-    private TextView mtvTemperature;
-    private TextView mtvHumidity;
-    private TextView mtvVoltage;
+    private TextView mtvTemp;
+    private TextView mtvHumi;
+    private TextView mtvVolt;
     private EditText metFrom;
     private EditText metTo;
     private ImageView mivStatus;
@@ -86,9 +87,9 @@ public class DetailActivity extends AppCompatActivity {
 
         //region findView
         mtvDate = findViewById(R.id.tv_detail_date);
-        mtvTemperature = findViewById(R.id.tv_detail_temperature);
-        mtvHumidity = findViewById(R.id.tv_detail_humidity);
-        mtvVoltage = findViewById(R.id.tv_detail_voltage);
+        mtvTemp = findViewById(R.id.tv_detail_temperature);
+        mtvHumi = findViewById(R.id.tv_detail_humidity);
+        mtvVolt = findViewById(R.id.tv_detail_voltage);
         metFrom = ((TextInputLayout) (findViewById(R.id.tilay_detail_from))).getEditText();
         metFrom.setOnFocusChangeListener(mOnFocusChangeListener);
         metTo = ((TextInputLayout) (findViewById(R.id.tilay_detail_to))).getEditText();
@@ -125,17 +126,17 @@ public class DetailActivity extends AppCompatActivity {
         //endregion
 
         final Bundle _bundle = getIntent().getExtras();
-        ((TextView) (findViewById(R.id.tv_detail_title))).setText(_bundle.getString("title"));
-        mDevId = _bundle.getString("id");
+        ((TextView) (findViewById(R.id.tv_detail_title))).setText(_bundle.getString("Title", "NaN"));
+        mDevId = _bundle.getString("ID", "NaN");
         ((TextView) (findViewById(R.id.tv_detail_deviceid))).setText(mDevId);
 
-        if (_bundle.getBoolean("status"))
+        if (_bundle.getBoolean("Status", false))
             mivStatus.setImageResource(R.drawable.ic_online);
         else mivStatus.setImageResource(R.drawable.ic_offline);
 
         drawOverview(_bundle);
         initLineChart();
-        drawLineChart((SinDevDataBean.DataBean) getIntent().getParcelableExtra("data"));
+        drawLineChart((SinDevDataBean.DataBean) getIntent().getParcelableExtra("Data"));
     }
 
     private void getLatestData() {
@@ -146,17 +147,17 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onSuccess(String response) {
                 SinDevDataBean _sinDevDataBean = GsonHelper.get().toObject(response, SinDevDataBean.class);
-                if (_sinDevDataBean.getErrno() != 0) {
+                if (_sinDevDataBean.getCode() != 0) {
                     mSwipeRefreshLayout.setRefreshing(false);
                     ToastHelper.makeText(ToastHelper.Message.FAILED);
                 } else {
-                    List<SinDevDataBean.DataBean.DatastreamsBean> _sinDevDataStreamsBeans = _sinDevDataBean.getData().getDatastreams();
+                    List<SinDevDataBean.DataBean.DatastreamsBean> _listSinDevData = _sinDevDataBean.getData().getDatastreams();
                     Bundle _bundle = new Bundle();
-                    _bundle.putString("date", _sinDevDataStreamsBeans.get(0).getDatapoints().get(0).getAt().substring(0, 19));
-                    _bundle.putDouble("wifisig", _sinDevDataStreamsBeans.get(0).getDatapoints().get(0).getValue());
-                    _bundle.putDouble("temperature", _sinDevDataStreamsBeans.get(1).getDatapoints().get(0).getValue());
-                    _bundle.putDouble("humidity", _sinDevDataStreamsBeans.get(2).getDatapoints().get(0).getValue());
-                    _bundle.putDouble("voltage", _sinDevDataStreamsBeans.get(3).getDatapoints().get(0).getValue());
+                    for (int i = 0; i < _listSinDevData.size(); i++) {                //将最新数据点依次存入对应数据流名的包中
+                        _bundle.putString(_listSinDevData.get(i).getId(), _listSinDevData.get(i).getDatapoints().get(0).getValue());
+                        if (_listSinDevData.get(i).getId().equals(GlobalVarUtils.RSSI))
+                            _bundle.putString("Date", _listSinDevData.get(i).getDatapoints().get(0).getAt().substring(0, 19));
+                    }
                     drawOverview(_bundle);
                     mSwipeRefreshLayout.setRefreshing(false);
                     ToastHelper.makeText(ToastHelper.Message.SUCCESS);
@@ -176,14 +177,14 @@ public class DetailActivity extends AppCompatActivity {
         SimpleDateFormat _format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         _params.put("start", _format.format(pFromDate));
         _params.put("end", _format.format(pToDate));
-        _params.put("datastream_id", "temperature,humidity,voltage");
+        _params.put("datastream_id", GlobalVarUtils.Temp + "," + GlobalVarUtils.Humi + "," + GlobalVarUtils.Volt + "," + GlobalVarUtils.RSSI);
         _params.put("limit", "6000");
         _params.put("sort", "DESC");
         OneNetHelper.queryDataPoints(mDevId, _params, new OneNetApiCallback() {
             @Override
             public void onSuccess(String response) {
                 SinDevDataBean _sinDevDataBean = GsonHelper.get().toObject(response, SinDevDataBean.class);
-                if (_sinDevDataBean.getErrno() != 0) {
+                if (_sinDevDataBean.getCode() != 0) {
                     ToastHelper.makeText(ToastHelper.Message.FAILED);
                 } else {
                     if (_sinDevDataBean.getData().getCount() == 6000) {
@@ -211,7 +212,7 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onSuccess(String pResponse) {
                 MulDevStatusBean _mulDevStatusBean = GsonHelper.get().toObject(pResponse, MulDevStatusBean.class);
-                if (_mulDevStatusBean.getErrno() != 0) {
+                if (_mulDevStatusBean.getCode() != 0) {
                     mSwipeRefreshLayout.setRefreshing(false);
                     ToastHelper.makeText(ToastHelper.Message.FAILED);
                 } else {
@@ -231,12 +232,12 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void drawOverview(Bundle pBundle) {
-        mtvDate.setText(pBundle.getString("date"));
-        mtvTemperature.setText(new DecimalFormat("##.0").format(pBundle.getDouble("temperature")));
-        mtvHumidity.setText(new DecimalFormat("##.0").format(pBundle.getDouble("humidity")));
-        mtvVoltage.setText(new DecimalFormat("###").format(pBundle.getDouble("voltage")));
+        mtvDate.setText(pBundle.getString("Date", "NaN"));
+        mtvTemp.setText(pBundle.getString(GlobalVarUtils.Temp, "NaN"));
+        mtvHumi.setText(pBundle.getString(GlobalVarUtils.Humi, "NaN"));
+        mtvVolt.setText(pBundle.getString(GlobalVarUtils.Volt, "NaN"));
 
-        int _wifiSig = (int) pBundle.getDouble("wifisig");
+        int _wifiSig = Integer.parseInt(pBundle.getString(GlobalVarUtils.RSSI));
         if (_wifiSig == 100)
             mivWifiSig.setImageResource(R.drawable.ic_wifi_sig_5);
         else if (_wifiSig > 66)
@@ -321,30 +322,39 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void drawLineChart(SinDevDataBean.DataBean pSinDevDataBean) {
-        //包含0:温度temperature;1:湿度humidity;2:电压voltage四种数据流
-        int _count = pSinDevDataBean.getCount() / 3;
-        List<SinDevDataBean.DataBean.DatastreamsBean.DatapointsBean> _tDatapointsBeans = pSinDevDataBean.getDatastreams().get(0).getDatapoints();
-        List<SinDevDataBean.DataBean.DatastreamsBean.DatapointsBean> _hDatapointsBeans = pSinDevDataBean.getDatastreams().get(1).getDatapoints();
-        List<SinDevDataBean.DataBean.DatastreamsBean.DatapointsBean> _vDatapointsBeans = pSinDevDataBean.getDatastreams().get(2).getDatapoints();
-        mPointValuesT.clear();
-        mPointValuesH.clear();
-        mPointValuesV.clear();
-        mAxisXValuesTop.clear();
-        mAxisXValuesBottom.clear();
+        Map<String, Integer> _map = new HashMap<>();
+        List<SinDevDataBean.DataBean.DatastreamsBean> _listDatastreams = pSinDevDataBean.getDatastreams();
+        for (int i = 0; i < _listDatastreams.size(); i++)
+            _map.put(_listDatastreams.get(i).getId(), i);
+        int _count = _listDatastreams.get(_map.get(GlobalVarUtils.RSSI)).getDatapoints().size();      //以RSSI为标准计算上传数据量
 
-        //region 设置折线点数据
-        for (int i = 0, j = _count - 1; j >= 0; i++, j--) {
-            mPointValuesT.add(new PointValue(i, (float) _tDatapointsBeans.get(j).getValue()));
-            mPointValuesH.add(new PointValue(i, (float) _hDatapointsBeans.get(j).getValue()));
-            mPointValuesV.add(new PointValue(i, (float) _vDatapointsBeans.get(j).getValue() / 4).setLabel(String.valueOf((int) _vDatapointsBeans.get(j).getValue())));
-            mAxisXValuesTop.add(new AxisValue(i).setLabel(_tDatapointsBeans.get(j).getAt().substring(0, 10)));
-            mAxisXValuesBottom.add(new AxisValue(i).setLabel(_tDatapointsBeans.get(j).getAt().substring(11, 19)));
+        try {
+            List<SinDevDataBean.DataBean.DatastreamsBean.DatapointsBean> _listTDatapoints = _listDatastreams.get(_map.get(GlobalVarUtils.Temp)).getDatapoints();
+            List<SinDevDataBean.DataBean.DatastreamsBean.DatapointsBean> _listHDatapoints = _listDatastreams.get(_map.get(GlobalVarUtils.Humi)).getDatapoints();
+            List<SinDevDataBean.DataBean.DatastreamsBean.DatapointsBean> _listVDatapoints = _listDatastreams.get(_map.get(GlobalVarUtils.Volt)).getDatapoints();
+            mPointValuesT.clear();
+            mPointValuesH.clear();
+            mPointValuesV.clear();
+            mAxisXValuesTop.clear();
+            mAxisXValuesBottom.clear();
+
+            //region 设置折线点数据
+            for (int i = 0, j = _count - 1; j >= 0; i++, j--) {
+                mPointValuesT.add(new PointValue(i, Float.parseFloat(_listTDatapoints.get(j).getValue())));
+                mPointValuesH.add(new PointValue(i, Float.parseFloat(_listHDatapoints.get(j).getValue())));
+                mPointValuesV.add(new PointValue(i, Float.parseFloat(_listVDatapoints.get(j).getValue()) / 4).setLabel(_listVDatapoints.get(j).getValue()));
+                mAxisXValuesTop.add(new AxisValue(i).setLabel(_listTDatapoints.get(j).getAt().substring(0, 10)));
+                mAxisXValuesBottom.add(new AxisValue(i).setLabel(_listTDatapoints.get(j).getAt().substring(11, 19)));
+            }
+
+            mLineT.setValues(mPointValuesT);
+            mLineH.setValues(mPointValuesH);
+            mLineV.setValues(mPointValuesV);
+            //endregion
+        } catch (Exception e) {
+            ToastHelper.makeText(e);
+            return;
         }
-
-        mLineT.setValues(mPointValuesT);
-        mLineH.setValues(mPointValuesH);
-        mLineV.setValues(mPointValuesV);
-        //endregion
 
         //region 设置折线坐标数据
 

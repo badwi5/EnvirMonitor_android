@@ -49,6 +49,7 @@ import lecho.lib.hellocharts.view.LineChartView;
 
 public class MainActivity extends AppCompatActivity {
     //region 变量初始化
+
     private CoordinatorLayout.LayoutParams mLayoutParams =
             new CoordinatorLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -68,11 +69,12 @@ public class MainActivity extends AppCompatActivity {
     private MulDevStatusBean mMulDevStatusBean;
     private MulDevDataBean mMulDevDataBean;
     private SinDevDataBean mSinDevDataBean;
-    private List<MulDevStatusBean.DataBean.DevicesBean> mMulDevStatusBeans = new ArrayList<>();
-    private List<MulDevDataBean.DataBean.DevicesBean> mMulDevDataBeans = new ArrayList<>();
+    private List<MulDevStatusBean.DataBean.DevicesBean> mListMulDevStatus = new ArrayList<>();
+    private List<MulDevDataBean.DataBean.DevicesBean> mListMulDevData = new ArrayList<>();
     private int mItemPosition;
     private boolean mIsExit = false;
     //endregion
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
         //region 卡片列表RecyclerView
         RecyclerView _recyclerView = findViewById(R.id.ryv_main);
         _recyclerView.setHasFixedSize(true);
-        mMainCardAdapter = new MainCardAdapter(mMulDevStatusBeans, mMulDevDataBeans);
+        mMainCardAdapter = new MainCardAdapter(mListMulDevStatus, mListMulDevData);
         _recyclerView.setAdapter(mMainCardAdapter);
         _recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         mMainCardAdapter.setOnItemFocusChangeListener(new MainCardAdapter.OnItemFocusChangeListener() {
@@ -144,14 +146,14 @@ public class MainActivity extends AppCompatActivity {
                 if (pHasFocus) {
                     mItemPosition = pPosition;
                     Map<String, String> _params = new HashMap<>();
-                    _params.put("datastream_id", "temperature,humidity,voltage");
+                    _params.put("datastream_id", GlobalVarUtils.Temp + "," + GlobalVarUtils.Humi + "," + GlobalVarUtils.Volt + "," + GlobalVarUtils.RSSI);
                     _params.put("limit", "100");
                     _params.put("sort", "DESC");
                     OneNetHelper.queryDataPoints(mMulDevStatusBean.getData().getDevices().get(pPosition).getId(), _params, new OneNetApiCallback() {
                         @Override
                         public void onSuccess(String pResponse) {
                             mSinDevDataBean = GsonHelper.get().toObject(pResponse, SinDevDataBean.class);
-                            if (mSinDevDataBean.getErrno() != 0) {
+                            if (mSinDevDataBean.getCode() != 0) {
                                 ToastHelper.makeText(ToastHelper.Message.FAILED);
                             } else {
                                 if (mSinDevDataBean.getData().getCount() == 0)
@@ -208,8 +210,8 @@ public class MainActivity extends AppCompatActivity {
             if (pDevCount > 0) {
                 updateDevice(pDevIds);
             } else {
-                mMulDevStatusBeans.clear();
-                mMulDevDataBeans.clear();
+                mListMulDevStatus.clear();
+                mListMulDevData.clear();
                 mMainCardAdapter.notifyDataSetChanged();
                 mSwipeRefreshLayout.setRefreshing(false);
                 ToastHelper.makeText(ToastHelper.Message.NO_DEVICE);
@@ -226,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(String pResponse) {
                 mMulDevStatusBean = GsonHelper.get().toObject(pResponse, MulDevStatusBean.class);
-                if (mMulDevStatusBean.getErrno() != 0) {
+                if (mMulDevStatusBean.getCode() != 0) {
                     mSwipeRefreshLayout.setRefreshing(false);
                     ToastHelper.makeText(ToastHelper.Message.FAILED);
                 } else {
@@ -248,13 +250,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(String pResponse) {
                 mMulDevDataBean = GsonHelper.get().toObject(pResponse, MulDevDataBean.class);
-                if (mMulDevDataBean.getErrno() != 0) {
+                if (mMulDevDataBean.getCode() != 0) {
                     ToastHelper.makeText(ToastHelper.Message.FAILED);
                 } else {
-                    mMulDevStatusBeans.clear();
-                    mMulDevStatusBeans.addAll(mMulDevStatusBean.getData().getDevices());
-                    mMulDevDataBeans.clear();
-                    mMulDevDataBeans.addAll(mMulDevDataBean.getData().getDevices());
+                    mListMulDevStatus.clear();
+                    mListMulDevStatus.addAll(mMulDevStatusBean.getData().getDevices());
+                    mListMulDevData.clear();
+                    mListMulDevData.addAll(mMulDevDataBean.getData().getDevices());
                     mMainCardAdapter.notifyDataSetChanged();
                     ToastHelper.makeText(ToastHelper.Message.SUCCESS);
                 }
@@ -330,40 +332,47 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void drawLineChart(SinDevDataBean.DataBean pSinDevDataBean) {
-        //包含0:温度temperature;1:湿度humidity;2:电压voltage四种数据流
-        int _count = pSinDevDataBean.getCount() / 3;
-        List<SinDevDataBean.DataBean.DatastreamsBean.DatapointsBean> _tDatapointsBeans = pSinDevDataBean.getDatastreams().get(0).getDatapoints();
-        List<SinDevDataBean.DataBean.DatastreamsBean.DatapointsBean> _hDatapointsBeans = pSinDevDataBean.getDatastreams().get(1).getDatapoints();
-        List<SinDevDataBean.DataBean.DatastreamsBean.DatapointsBean> _vDatapointsBeans = pSinDevDataBean.getDatastreams().get(2).getDatapoints();
-        mPointValuesT.clear();
-        mPointValuesH.clear();
-        mPointValuesV.clear();
-        mAxisXValuesTop.clear();
-        mAxisXValuesBottom.clear();
+        Map<String, Integer> _map = new HashMap<>();
+        List<SinDevDataBean.DataBean.DatastreamsBean> _listDatastreams = pSinDevDataBean.getDatastreams();
+        for (int i = 0; i < _listDatastreams.size(); i++)
+            _map.put(_listDatastreams.get(i).getId(), i);
+        int _count = _listDatastreams.get(_map.get(GlobalVarUtils.RSSI)).getDatapoints().size();      //以RSSI为标准计算上传数据量
 
-        //region 设置折线点数据
-        for (int i = 0, j = _count - 1; j >= 0; i++, j--) {
-            mPointValuesT.add(new PointValue(i, (float) _tDatapointsBeans.get(j).getValue()));
-            mPointValuesH.add(new PointValue(i, (float) _hDatapointsBeans.get(j).getValue()));
-            mPointValuesV.add(new PointValue(i, (float) _vDatapointsBeans.get(j).getValue() / 4).setLabel(String.valueOf((int) _vDatapointsBeans.get(j).getValue())));
-            mAxisXValuesTop.add(new AxisValue(i).setLabel(_tDatapointsBeans.get(j).getAt().substring(0, 10)));
-            mAxisXValuesBottom.add(new AxisValue(i).setLabel(_tDatapointsBeans.get(j).getAt().substring(11, 19)));
+        try {
+            List<SinDevDataBean.DataBean.DatastreamsBean.DatapointsBean> _listTDatapoints = _listDatastreams.get(_map.get(GlobalVarUtils.Temp)).getDatapoints();
+            List<SinDevDataBean.DataBean.DatastreamsBean.DatapointsBean> _listHDatapoints = _listDatastreams.get(_map.get(GlobalVarUtils.Humi)).getDatapoints();
+            List<SinDevDataBean.DataBean.DatastreamsBean.DatapointsBean> _listVDatapoints = _listDatastreams.get(_map.get(GlobalVarUtils.Volt)).getDatapoints();
+
+            mPointValuesT.clear();
+            mPointValuesH.clear();
+            mPointValuesV.clear();
+            mAxisXValuesTop.clear();
+            mAxisXValuesBottom.clear();
+
+            //region 设置折线点数据
+            for (int i = 0, j = _count - 1; j >= 0; i++, j--) {
+                mPointValuesT.add(new PointValue(i, Float.parseFloat(_listTDatapoints.get(j).getValue())));
+                mPointValuesH.add(new PointValue(i, Float.parseFloat(_listHDatapoints.get(j).getValue())));
+                mPointValuesV.add(new PointValue(i, Float.parseFloat(_listVDatapoints.get(j).getValue()) / 4).setLabel(_listVDatapoints.get(j).getValue()));
+                mAxisXValuesTop.add(new AxisValue(i).setLabel(_listTDatapoints.get(j).getAt().substring(0, 10)));
+                mAxisXValuesBottom.add(new AxisValue(i).setLabel(_listTDatapoints.get(j).getAt().substring(11, 19)));
+            }
+
+            mLineT.setValues(mPointValuesT);
+            mLineH.setValues(mPointValuesH);
+            mLineV.setValues(mPointValuesV);
+            //endregion
+        } catch (Exception e) {
+            ToastHelper.makeText(e);
+            return;
         }
-
-        mLineT.setValues(mPointValuesT);
-        mLineH.setValues(mPointValuesH);
-        mLineV.setValues(mPointValuesV);
-        //endregion
-
         //region 设置折线坐标数据
-
-        mAxisXTop.setValues(mAxisXValuesTop);  //X轴 年月日
-        mAxisXBottom.setValues(mAxisXValuesBottom);  //X轴 时分秒
+        mAxisXTop.setValues(mAxisXValuesTop);           //X轴 年月日
+        mAxisXBottom.setValues(mAxisXValuesBottom);     //X轴 时分秒
         mLineChartData.setAxisXTop(mAxisXTop);
         mLineChartData.setAxisXBottom(mAxisXBottom);
         mLineChartData.setLines(mLines);
         mLineChartView.setLineChartData(mLineChartData);
-
         //endregion
 
         //region 图表视图设置
@@ -373,6 +382,30 @@ public class MainActivity extends AppCompatActivity {
         //endregion
     }
 
+    //底部弹框点击事件
+    public void onChartClicked(View pView) {
+        Intent _intent = new Intent(this, DetailActivity.class);
+        MulDevStatusBean.DataBean.DevicesBean _mulDevStatus = mListMulDevStatus.get(mItemPosition);
+        List<MulDevDataBean.DataBean.DevicesBean.DatastreamsBean> _listMulDevData = mListMulDevData.get(mItemPosition).getDatastreams();
+
+        Bundle _bundle = new Bundle();
+        for (int i = 0; i < _listMulDevData.size(); i++) {                //将最新数据点依次存入对应数据流名的包中
+            _bundle.putString(_listMulDevData.get(i).getId(), _listMulDevData.get(i).getValue());
+            if (_listMulDevData.get(i).getId().equals(GlobalVarUtils.RSSI))
+                _bundle.putString("Date", _listMulDevData.get(i).getAt());
+        }
+        _bundle.putString("Title", _mulDevStatus.getTitle());
+        _bundle.putString("ID", _mulDevStatus.getId());
+        _bundle.putBoolean("Status", _mulDevStatus.isOnline());
+        _intent.putExtras(_bundle);
+        _intent.putExtra("Data",mSinDevDataBean.getData());    //将所选设备最新100条数据存入包中
+        this.startActivity(_intent);
+    }
+
+    Runnable mRunnable;
+    Handler mHandler = new Handler();
+
+    //显示底部弹框
     private void showBottomSheet(CoordinatorLayout.LayoutParams pLayoutParams, final View pChild, final View pDependency) {
         mHandler.removeCallbacks(mRunnable);
         pLayoutParams.dodgeInsetEdges = Gravity.BOTTOM;
@@ -380,9 +413,7 @@ public class MainActivity extends AppCompatActivity {
         BottomSheetBehavior.from(pDependency).setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
-    Runnable mRunnable;
-    Handler mHandler = new Handler();
-
+    //隐藏底部弹框
     private void hideBottomSheet(final CoordinatorLayout.LayoutParams pLayoutParams, final View pChild, final View pDependency) {
         BottomSheetBehavior.from(pDependency).setState(BottomSheetBehavior.STATE_COLLAPSED);
         mHandler.postDelayed(mRunnable = new Runnable() {
@@ -392,26 +423,6 @@ public class MainActivity extends AppCompatActivity {
                 pChild.setLayoutParams(pLayoutParams);
             }
         }, 250);
-    }
-
-    //图表点击事件
-    public void onChartClicked(View pView) {
-        Intent _intent = new Intent(this, DetailActivity.class);
-        MulDevStatusBean.DataBean.DevicesBean devicesBean = mMulDevStatusBeans.get(mItemPosition);
-        List<MulDevDataBean.DataBean.DevicesBean.DatastreamsBean> datastreamsBean = mMulDevDataBeans.get(mItemPosition).getDatastreams();
-
-        Bundle _bundle = new Bundle();
-        _bundle.putString("title", devicesBean.getTitle());
-        _bundle.putString("id", devicesBean.getId());
-        _bundle.putBoolean("status", devicesBean.isOnline());
-        _bundle.putString("date", datastreamsBean.get(0).getAt());
-        _bundle.putDouble("temperature", datastreamsBean.get(0).getValue());
-        _bundle.putDouble("humidity", datastreamsBean.get(1).getValue());
-        _bundle.putDouble("voltage", datastreamsBean.get(3).getValue());
-        _bundle.putDouble("wifisig", datastreamsBean.get(2).getValue());
-        _intent.putExtras(_bundle);
-        _intent.putExtra("data", mSinDevDataBean.getData());
-        this.startActivity(_intent);
     }
 
     //添加搜索栏

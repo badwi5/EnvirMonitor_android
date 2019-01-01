@@ -1,7 +1,5 @@
 package com.xuxiang.envirmonitor.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 
 /**
@@ -11,204 +9,86 @@ import java.util.List;
 public class FuzzyDevIdBean {
 
     /**
-     * errno : 0
-     * data : {"per_page":30,"devices":[{"private":false,"protocol":"MQTT","create_time":"2017-09-10 16:52:42","online":true,"location":{"lat":0,"lon":0},"id":"13606144","auth_info":"id001","title":"监控","tags":[]}],"total_count":16,"page":1}
-     * error : succ
+     * code : 0
+     * data : {"devices":[{"act_time":"2018-12-19 16:44:37","auth_info":"12E171029006","create_time":"2017-10-29 16:08:51","desc":"","id":"20128886","last_login":"2018-12-20 08:07:30","location":{"lat":0,"lon":0},"online":false,"private":false,"protocol":"MQTT","tags":[],"title":"测试9"},{"auth_info":"12E171029005","create_time":"2017-10-29 16:08:39","desc":"","id":"20128883","location":{"lat":0,"lon":0},"online":false,"private":false,"protocol":"MQTT","tags":[],"title":"测试8"},{"auth_info":"12E171029004","create_time":"2017-10-29 16:08:28","desc":"","id":"20128882","location":{"lat":0,"lon":0},"online":false,"private":false,"protocol":"MQTT","tags":[],"title":"测试7"},{"auth_info":"12E171029003","create_time":"2017-10-29 16:08:07","desc":"","id":"20128880","location":{"lat":0,"lon":0},"online":false,"private":false,"protocol":"MQTT","tags":[],"title":"测试6"},{"auth_info":"12E171029002","create_time":"2017-10-29 16:07:45","desc":"","id":"20128877","location":{"lat":0,"lon":0},"online":false,"private":false,"protocol":"MQTT","tags":[],"title":"测试5"},{"auth_info":"12E171029001","create_time":"2017-10-29 16:07:32","desc":"","id":"20128874","location":{"lat":0,"lon":0},"online":false,"private":false,"protocol":"MQTT","tags":[],"title":"测试4"},{"auth_info":"12E171016001","create_time":"2017-10-16 22:27:30","desc":"","id":"19916638","location":{"lat":0,"lon":0},"online":false,"private":false,"protocol":"MQTT","tags":[],"title":"测试3"},{"act_time":"2018-12-19 10:49:34","auth_info":"12E170911001","create_time":"2017-09-11 17:28:53","desc":"","id":"13629870","last_login":"2018-12-23 17:46:34","location":{"lat":0,"lon":0},"online":false,"private":false,"protocol":"MQTT","tags":[],"title":"测试2"},{"act_time":"2018-12-14 11:34:50","auth_info":"12E170910001","create_time":"2017-09-10 16:52:42","desc":"","id":"13606144","last_login":"2018-12-23 21:14:08","location":{"lat":0,"lon":0},"online":true,"private":false,"protocol":"MQTT","tags":[],"title":"测试1"}],"page":1,"per_page":30,"total_count":9}
+     * msg : succ
      */
 
-    private int errno;
+    private int code;
     private DataBean data;
-    private String error;
+    private String msg;
 
-    public int getErrno() {
-        return errno;
-    }
-
-    public void setErrno(int errno) {
-        this.errno = errno;
+    public int getCode() {
+        return code;
     }
 
     public DataBean getData() {
         return data;
     }
 
-    public void setData(DataBean data) {
-        this.data = data;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
+    public String getMsg() {
+        return msg;
     }
 
     public static class DataBean {
         /**
-         * per_page : 30
-         * devices : [{"private":false,"protocol":"MQTT","create_time":"2017-09-10 16:52:42","online":true,"location":{"lat":0,"lon":0},"id":"13606144","auth_info":"id001","title":"监控","tags":[]}]
-         * total_count : 16
+         * devices : [{"act_time":"2018-12-19 16:44:37","auth_info":"12E171029006","create_time":"2017-10-29 16:08:51","desc":"","id":"20128886","last_login":"2018-12-20 08:07:30","location":{"lat":0,"lon":0},"online":false,"private":false,"protocol":"MQTT","tags":[],"title":"测试9"},{"auth_info":"12E171029005","create_time":"2017-10-29 16:08:39","desc":"","id":"20128883","location":{"lat":0,"lon":0},"online":false,"private":false,"protocol":"MQTT","tags":[],"title":"测试8"},{"auth_info":"12E171029004","create_time":"2017-10-29 16:08:28","desc":"","id":"20128882","location":{"lat":0,"lon":0},"online":false,"private":false,"protocol":"MQTT","tags":[],"title":"测试7"},{"auth_info":"12E171029003","create_time":"2017-10-29 16:08:07","desc":"","id":"20128880","location":{"lat":0,"lon":0},"online":false,"private":false,"protocol":"MQTT","tags":[],"title":"测试6"},{"auth_info":"12E171029002","create_time":"2017-10-29 16:07:45","desc":"","id":"20128877","location":{"lat":0,"lon":0},"online":false,"private":false,"protocol":"MQTT","tags":[],"title":"测试5"},{"auth_info":"12E171029001","create_time":"2017-10-29 16:07:32","desc":"","id":"20128874","location":{"lat":0,"lon":0},"online":false,"private":false,"protocol":"MQTT","tags":[],"title":"测试4"},{"auth_info":"12E171016001","create_time":"2017-10-16 22:27:30","desc":"","id":"19916638","location":{"lat":0,"lon":0},"online":false,"private":false,"protocol":"MQTT","tags":[],"title":"测试3"},{"act_time":"2018-12-19 10:49:34","auth_info":"12E170911001","create_time":"2017-09-11 17:28:53","desc":"","id":"13629870","last_login":"2018-12-23 17:46:34","location":{"lat":0,"lon":0},"online":false,"private":false,"protocol":"MQTT","tags":[],"title":"测试2"},{"act_time":"2018-12-14 11:34:50","auth_info":"12E170910001","create_time":"2017-09-10 16:52:42","desc":"","id":"13606144","last_login":"2018-12-23 21:14:08","location":{"lat":0,"lon":0},"online":true,"private":false,"protocol":"MQTT","tags":[],"title":"测试1"}]
          * page : 1
+         * per_page : 30
+         * total_count : 9
          */
 
-        private int per_page;
         private int total_count;
-        private int page;
         private List<DevicesBean> devices;
-
-        public int getPer_page() {
-            return per_page;
-        }
-
-        public void setPer_page(int per_page) {
-            this.per_page = per_page;
-        }
 
         public int getTotal_count() {
             return total_count;
-        }
-
-        public void setTotal_count(int total_count) {
-            this.total_count = total_count;
-        }
-
-        public int getPage() {
-            return page;
-        }
-
-        public void setPage(int page) {
-            this.page = page;
         }
 
         public List<DevicesBean> getDevices() {
             return devices;
         }
 
-        public void setDevices(List<DevicesBean> devices) {
-            this.devices = devices;
-        }
-
         public static class DevicesBean {
             /**
+             * act_time : 2018-12-19 16:44:37
+             * auth_info : 12E171029006
+             * create_time : 2017-10-29 16:08:51
+             * desc :
+             * id : 20128886
+             * last_login : 2018-12-20 08:07:30
+             * location : {"lat":0,"lon":0}
+             * online : false
              * private : false
              * protocol : MQTT
-             * create_time : 2017-09-10 16:52:42
-             * online : true
-             * location : {"lat":0,"lon":0}
-             * id : 13606144
-             * auth_info : id001
-             * title : 监控
              * tags : []
+             * title : 测试9
              */
 
-            @SerializedName("private")
-            private boolean privateX;
-            private String protocol;
-            private String create_time;
-            private boolean online;
-            private LocationBean location;
-            private String id;
             private String auth_info;
+            private String id;
+            private String last_login;
+            private boolean online;
             private String title;
-            private List<?> tags;
 
-            public boolean isPrivateX() {
-                return privateX;
-            }
-
-            public void setPrivateX(boolean privateX) {
-                this.privateX = privateX;
-            }
-
-            public String getProtocol() {
-                return protocol;
-            }
-
-            public void setProtocol(String protocol) {
-                this.protocol = protocol;
-            }
-
-            public String getCreate_time() {
-                return create_time;
-            }
-
-            public void setCreate_time(String create_time) {
-                this.create_time = create_time;
-            }
-
-            public boolean isOnline() {
-                return online;
-            }
-
-            public void setOnline(boolean online) {
-                this.online = online;
-            }
-
-            public LocationBean getLocation() {
-                return location;
-            }
-
-            public void setLocation(LocationBean location) {
-                this.location = location;
+            public String getAuth_info() {
+                return auth_info;
             }
 
             public String getId() {
                 return id;
             }
 
-            public void setId(String id) {
-                this.id = id;
+            public String getLast_login() {
+                return last_login;
             }
 
-            public String getAuth_info() {
-                return auth_info;
-            }
-
-            public void setAuth_info(String auth_info) {
-                this.auth_info = auth_info;
+            public boolean isOnline() {
+                return online;
             }
 
             public String getTitle() {
                 return title;
-            }
-
-            public void setTitle(String title) {
-                this.title = title;
-            }
-
-            public List<?> getTags() {
-                return tags;
-            }
-
-            public void setTags(List<?> tags) {
-                this.tags = tags;
-            }
-
-            public static class LocationBean {
-                /**
-                 * lat : 0
-                 * lon : 0
-                 */
-
-                private int lat;
-                private int lon;
-
-                public int getLat() {
-                    return lat;
-                }
-
-                public void setLat(int lat) {
-                    this.lat = lat;
-                }
-
-                public int getLon() {
-                    return lon;
-                }
-
-                public void setLon(int lon) {
-                    this.lon = lon;
-                }
             }
         }
     }

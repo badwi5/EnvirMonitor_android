@@ -26,7 +26,7 @@ public class OneNetHelper extends OneNetApi {
 
     private static String urlForQueryingMultiDevices(String pParams) {
         HttpUrl.Builder _builder = new HttpUrl.Builder()
-                .scheme(Urls.SCHEME).host(Urls.sHost).addPathSegment("devices").addPathSegment("status");
+                .scheme(Urls.sScheme).host(Urls.sHost).addPathSegment("devices").addPathSegment("status");
         if (pParams != null)
             _builder.addEncodedQueryParameter("devIds", pParams);
         return _builder.toString();
@@ -34,7 +34,7 @@ public class OneNetHelper extends OneNetApi {
 
     private static String urlForQueryingMultiDevicesData(String pParams) {
         HttpUrl.Builder _builder = new HttpUrl.Builder()
-                .scheme(Urls.SCHEME).host(Urls.sHost).addPathSegment("devices").addPathSegment("datapoints");
+                .scheme(Urls.sScheme).host(Urls.sHost).addPathSegment("devices").addPathSegment("datapoints");
         if (pParams != null)
             _builder.addEncodedQueryParameter("devIds", pParams);
         return _builder.toString();

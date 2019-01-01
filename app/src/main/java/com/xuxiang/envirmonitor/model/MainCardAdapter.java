@@ -10,9 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xuxiang.envirmonitor.R;
+import com.xuxiang.envirmonitor.utils.GlobalVarUtils;
 
-import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hsian on 2017/10/23.
@@ -20,13 +22,13 @@ import java.util.List;
 
 public class MainCardAdapter extends RecyclerView.Adapter<MainCardAdapter.ViewHolder> {
 
-    private List<MulDevStatusBean.DataBean.DevicesBean> mMulDevStatusBeans;
-    private List<MulDevDataBean.DataBean.DevicesBean> mMulDevDataBeans;
+    private List<MulDevStatusBean.DataBean.DevicesBean> mListMulDevStatus;
+    private List<MulDevDataBean.DataBean.DevicesBean> mListMulDevData;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         LinearLayoutCompat mllayContainer;
         ImageView mivStatus;
-        TextView mtvTitle, mtvDevId, mtvDate, mtvTemperature, mtvHumidity, mtvVoltage;
+        TextView mtvTitle, mtvDevId, mtvDate, mtvTemp, mtvHumi, mtvVolt;
 
         ViewHolder(View pView) {
             super(pView);
@@ -35,16 +37,16 @@ public class MainCardAdapter extends RecyclerView.Adapter<MainCardAdapter.ViewHo
             mtvTitle = pView.findViewById(R.id.tv_mainitem_title);
             mtvDate = pView.findViewById(R.id.tv_mainitem_date);
             mtvDevId = pView.findViewById(R.id.tv_mainitem_deviceid);
-            mtvTemperature = pView.findViewById(R.id.tv_mainitem_temperature);
-            mtvHumidity = pView.findViewById(R.id.tv_mainitem_humidity);
-            mtvVoltage = pView.findViewById(R.id.tv_mainitem_voltage);
+            mtvTemp = pView.findViewById(R.id.tv_mainitem_temperature);
+            mtvHumi = pView.findViewById(R.id.tv_mainitem_humidity);
+            mtvVolt = pView.findViewById(R.id.tv_mainitem_voltage);
         }
     }
 
-    public MainCardAdapter(List<MulDevStatusBean.DataBean.DevicesBean> pMulDevStatusBeans,
-                           List<MulDevDataBean.DataBean.DevicesBean> pMulDevDataBeans) {
-        this.mMulDevStatusBeans = pMulDevStatusBeans;
-        this.mMulDevDataBeans = pMulDevDataBeans;
+    public MainCardAdapter(List<MulDevStatusBean.DataBean.DevicesBean> pListMulDevStatus,
+                           List<MulDevDataBean.DataBean.DevicesBean> pListMulDevData) {
+        this.mListMulDevStatus = pListMulDevStatus;
+        this.mListMulDevData = pListMulDevData;
     }
 
     @Override
@@ -76,33 +78,49 @@ public class MainCardAdapter extends RecyclerView.Adapter<MainCardAdapter.ViewHo
                 }
             });
         }
-        MulDevStatusBean.DataBean.DevicesBean _mulDevStatusBean = mMulDevStatusBeans.get(pPosition);
-        MulDevDataBean.DataBean.DevicesBean _mulDevDataBean = mMulDevDataBeans.get(pPosition);
+        MulDevStatusBean.DataBean.DevicesBean _mulDevStatus = mListMulDevStatus.get(pPosition);
+        MulDevDataBean.DataBean.DevicesBean _mulDevData = mListMulDevData.get(pPosition);
 
-        pHolder.mtvTitle.setText(_mulDevStatusBean.getTitle());
-        pHolder.mtvDevId.setText(_mulDevStatusBean.getId());
-        if (_mulDevDataBean.getDatastreams() == null) {
+        pHolder.mtvTitle.setText(_mulDevStatus.getTitle());
+        pHolder.mtvDevId.setText(_mulDevStatus.getId());
+        if (_mulDevData.getDatastreams() == null) {
             pHolder.mivStatus.setImageResource(R.drawable.ic_offline);
             pHolder.mtvDate.setText("    No Data");
-            pHolder.mtvTemperature.setText("NaN");
-            pHolder.mtvHumidity.setText("NaN");
-            pHolder.mtvVoltage.setText("NaN");
+            pHolder.mtvTemp.setText("NaN");
+            pHolder.mtvHumi.setText("NaN");
+            pHolder.mtvVolt.setText("NaN");
         } else {
-            if (!_mulDevStatusBean.isOnline())
+            if (!_mulDevStatus.isOnline())
                 pHolder.mivStatus.setImageResource(R.drawable.ic_offline);//离线图标
-            else if (_mulDevStatusBean.isOnline()) {
+            else if (_mulDevStatus.isOnline()) {
                 pHolder.mivStatus.setImageResource(R.drawable.ic_online);//在线图标
             }
-            pHolder.mtvDate.setText(_mulDevDataBean.getDatastreams().get(0).getAt());
-            pHolder.mtvTemperature.setText(new DecimalFormat("##.0").format(_mulDevDataBean.getDatastreams().get(0).getValue()));
-            pHolder.mtvHumidity.setText(new DecimalFormat("##.0").format(_mulDevDataBean.getDatastreams().get(1).getValue()));
-            pHolder.mtvVoltage.setText(new DecimalFormat("###").format(_mulDevDataBean.getDatastreams().get(3).getValue()));
+            Map<String, Integer> _map = new HashMap<>();
+            List<MulDevDataBean.DataBean.DevicesBean.DatastreamsBean> _listMulDevData = _mulDevData.getDatastreams();
+            for (int i = 0; i < _listMulDevData.size(); i++)
+                _map.put(_listMulDevData.get(i).getId(), i);
+            try {
+                pHolder.mtvDate.setText(_listMulDevData.get(_map.get(GlobalVarUtils.RSSI)).getAt());
+            } catch (Exception e) {
+            }
+            try {
+                pHolder.mtvTemp.setText(_listMulDevData.get(_map.get(GlobalVarUtils.Temp)).getValue());
+            } catch (Exception e) {
+            }
+            try {
+                pHolder.mtvHumi.setText(_listMulDevData.get(_map.get(GlobalVarUtils.Humi)).getValue());
+            } catch (Exception e) {
+            }
+            try {
+                pHolder.mtvVolt.setText(_listMulDevData.get(_map.get(GlobalVarUtils.Volt)).getValue());
+            } catch (Exception e) {
+            }
         }
     }
 
     @Override
     public int getItemCount() {
-        return mMulDevStatusBeans.size();
+        return mListMulDevStatus.size();
     }
 
     /*设置item点击事件的接口*/

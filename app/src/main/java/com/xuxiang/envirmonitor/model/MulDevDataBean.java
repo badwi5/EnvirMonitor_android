@@ -9,37 +9,25 @@ import java.util.List;
 public class MulDevDataBean {
 
     /**
-     * errno : 0
-     * data : {"devices":[{"title":"监控","id":"13606144","datastreams":[{"at":"2017-11-01 13:10:39","id":"temperature","value":26.9},{"at":"2017-11-01 13:10:39","id":"humidity","value":35.3},{"at":"2017-11-01 13:10:39","id":"RSSI","value":71},{"at":"2017-11-01 13:10:39","id":"voltage","value":214}]}]}
-     * error : succ
+     * code : 0
+     * data : {"devices":[{"datastreams":[{"at":"2018-12-23 21:50:00","id":"RSSI","value":66},{"at":"2018-12-23 21:50:00","id":"Humi","value":33.4},{"at":"2018-12-23 21:50:00","id":"Volt","value":220},{"at":"2018-12-23 21:50:00","id":"State","value":"online"},{"at":"2018-12-23 21:50:00","id":"Temp","value":14.6}],"id":"13606144","title":"测试1"}]}
+     * msg : succ
      */
 
-    private int errno;
+    private int code;
     private DataBean data;
-    private String error;
+    private String msg;
 
-    public int getErrno() {
-        return errno;
-    }
-
-    public void setErrno(int errno) {
-        this.errno = errno;
+    public int getCode() {
+        return code;
     }
 
     public DataBean getData() {
         return data;
     }
 
-    public void setData(DataBean data) {
-        this.data = data;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
+    public String getMsg() {
+        return msg;
     }
 
     public static class DataBean {
@@ -49,15 +37,11 @@ public class MulDevDataBean {
             return devices;
         }
 
-        public void setDevices(List<DevicesBean> devices) {
-            this.devices = devices;
-        }
-
         public static class DevicesBean {
             /**
-             * title : 监控
+             * datastreams : [{"at":"2018-12-23 21:50:00","id":"RSSI","value":66},{"at":"2018-12-23 21:50:00","id":"Humi","value":33.4},{"at":"2018-12-23 21:50:00","id":"Volt","value":220},{"at":"2018-12-23 21:50:00","id":"State","value":"online"},{"at":"2018-12-23 21:50:00","id":"Temp","value":14.6}]
              * id : 13606144
-             * datastreams : [{"at":"2017-11-01 13:10:39","id":"temperature","value":26.9},{"at":"2017-11-01 13:10:39","id":"humidity","value":35.3},{"at":"2017-11-01 13:10:39","id":"RSSI","value":71},{"at":"2017-11-01 13:10:39","id":"voltage","value":214}]
+             * title : 测试1
              */
 
             private String title;
@@ -68,59 +52,35 @@ public class MulDevDataBean {
                 return title;
             }
 
-            public void setTitle(String title) {
-                this.title = title;
-            }
-
             public String getId() {
                 return id;
-            }
-
-            public void setId(String id) {
-                this.id = id;
             }
 
             public List<DatastreamsBean> getDatastreams() {
                 return datastreams;
             }
 
-            public void setDatastreams(List<DatastreamsBean> datastreams) {
-                this.datastreams = datastreams;
-            }
-
             public static class DatastreamsBean {
                 /**
-                 * at : 2017-11-01 13:10:39
-                 * id : temperature
-                 * value : 26.9
+                 * at : 2018-12-23 21:50:00
+                 * id : RSSI
+                 * value : 66
                  */
 
                 private String at;
                 private String id;
-                private double value;
+                private String value;
 
                 public String getAt() {
                     return at;
-                }
-
-                public void setAt(String at) {
-                    this.at = at;
                 }
 
                 public String getId() {
                     return id;
                 }
 
-                public void setId(String id) {
-                    this.id = id;
-                }
-
-                public double getValue() {
+                public String getValue() {
                     return value;
-                }
-
-                public void setValue(double value) {
-                    this.value = value;
                 }
             }
         }

@@ -18,20 +18,24 @@ android {
     }
 }
 
+//需安装两个插件
+//File->Settings->Plugins->Browse Repositories->GsonFormat用于将json数据转换为class
+//File->Settings->Plugins->Browse Repositories->Android Parcelable code generator用于将类序列化便于bundle传递
+
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.github.lecho:hellocharts-library:1.5.8@aar'
-    compile('com.chinamobile.iot.onenet:onenet-sdk:+') {
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.github.lecho:hellocharts-library:1.5.8@aar'
+    implementation('com.chinamobile.iot.onenet:onenet-sdk:2.2.0') {
         exclude group: 'com.google.code.gson:gson:2.8.0'
     }
-    compile 'com.google.code.gson:gson:2.8.2'
-    compile 'com.android.support:cardview-v7:26.1.0'
-    compile 'com.android.support:recyclerview-v7:26.1.0'
-    compile 'com.android.support:design:26.1.0'
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    testCompile 'junit:junit:4.12'
+    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.android.support:cardview-v7:26.1.0'
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    implementation 'com.android.support:design:26.1.0'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    androidTestImplementation 'junit:junit:4.12'
 }

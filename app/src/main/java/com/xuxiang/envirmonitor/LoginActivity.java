@@ -25,22 +25,17 @@ import com.xuxiang.envirmonitor.utils.OneNetHelper;
 import com.xuxiang.envirmonitor.utils.ToastHelper;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
-
     private EditText mEditText;
     private ProgressBar mProgressBar;
-    private FuzzyDevIdBean mFuzzyDevIdBean;
-
     private String mApiKey;
-    private int mDevCount;
-    private String mDevIds = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         mProgressBar = findViewById(R.id.pgb_login);
         mEditText = ((TextInputLayout) (findViewById(R.id.tilay_login))).getEditText();
         mEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -89,23 +84,22 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(String pResponse) {
                 showProgress(false);
-                mFuzzyDevIdBean = GsonHelper.get().toObject(pResponse, FuzzyDevIdBean.class);
-                if (mFuzzyDevIdBean.getErrno() != 0)
+                FuzzyDevIdBean _fuzzyDevIdBean = GsonHelper.get().toObject(pResponse, FuzzyDevIdBean.class);
+                if (_fuzzyDevIdBean.getCode() != 0)
                     ToastHelper.makeText(ToastHelper.Message.LOGINFAILED);
                 else {
-                    mDevCount = mFuzzyDevIdBean.getData().getTotal_count();
-                    if (mDevCount > 0) {
-                        for (int i = 0; ; ) {
-                            mDevIds = mDevIds.concat(mFuzzyDevIdBean.getData().getDevices().get(i).getId());
-                            i++;
-                            if (i < mDevCount)
-                                mDevIds = mDevIds.concat(",");
-                            else break;
+                    String _devIds = "";
+                    int _devCount = _fuzzyDevIdBean.getData().getTotal_count();
+                    if (_devCount > 0) {
+                        List<FuzzyDevIdBean.DataBean.DevicesBean> _listFuzzyDevices = _fuzzyDevIdBean.getData().getDevices();
+                        for (int i = _devCount - 1; i >= 0; i--) {
+                            _devIds = _devIds.concat(_listFuzzyDevices.get(i).getId());
+                            _devIds = _devIds.concat(",");
                         }
                     }
                     GlobalVarUtils.setApikey(mApiKey);
-                    GlobalVarUtils.setDevCount(mDevCount);
-                    GlobalVarUtils.setDevIds(mDevIds);
+                    GlobalVarUtils.setDevCount(_devCount);
+                    GlobalVarUtils.setDevIds(_devIds);
                     GlobalVarUtils.save();
                     Intent _intent = new Intent();
                     setResult(RESULT_OK, _intent);
